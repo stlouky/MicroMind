@@ -39,4 +39,11 @@ extern int passed_tests; /**< Počet úspěšně prošlých testů */
  */
 void run_test(const char* test_name, bool condition);
 
+/**
+ * @brief Vytiskne souhrn výsledků testů.
+ *
+ * Tato funkce vypíše celkový počet testů a počet úspěšných testů.
+ */
+void print_test_summary();
+
 #endif // TEST_FRAMEWORK_H

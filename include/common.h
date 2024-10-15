@@ -3,6 +3,8 @@
 
 #include <pthread.h>
 
+#define SAFE_FREE(ptr) do { if ((ptr) != NULL) { free(ptr); (ptr) = NULL; } } while (0)
+
 // Úrovně logování
 /**
  * @brief Úrovně logování pro různé typy zpráv.
@@ -13,6 +15,18 @@ typedef enum {
     LOG_LEVEL_WARNING, /**< Varovné zprávy */
     LOG_LEVEL_ERROR    /**< Chybové zprávy */
 } LogLevel;
+
+/**
+ * @brief Logovací funkce pro zaznamenání chybové zprávy.
+ *
+ * Tato funkce vypíše chybovou zprávu na standardní chybový výstup spolu s názvem funkce,
+ * ve které k chybě došlo.
+ *
+ * @param func Název funkce, ve které došlo k chybě.
+ * @param message Text chybové zprávy, která má být zaznamenána.
+ */
+void log_error(const char* func, const char* message);
+
 
 // Proměnná pro aktuální úroveň logování
 /**
@@ -35,32 +49,13 @@ void set_log_level(LogLevel level);
  */
 LogLevel get_log_level(void);
 
-// Funkce pro logování zpráv
-/**
- * @brief Vypíše logovací zprávu na základě úrovně logování.
- *
- * @param level Úroveň logování zprávy.
- * @param func Název funkce, která generuje zprávu.
- * @param format Formátovací řetězec ve stylu printf pro zprávu.
- * @param ... Další parametry pro formátování zprávy.
- */
-void log_message(LogLevel level, const char* func, const char* format, ...);
-
 // Funkce pro bezpečné uvolnění paměti
 /**
  * @brief Bezpečně uvolní alokovanou paměť a nastaví ukazatel na NULL.
  *
  * @param ptr Ukazatel na ukazatel na paměť, která má být uvolněna.
  */
-void safe_free(void **ptr);
-
-// Definice makra pro bezpečné uvolnění paměti
-/**
- * @brief Makro pro bezpečné uvolnění paměti a nastavení ukazatele na NULL.
- *
- * Toto makro volá funkci safe_free, aby zajistilo, že uvolněná paměť nebude dále používána.
- */
-#define SAFE_FREE(ptr) do { safe_free((void**)&(ptr)); } while(0)
+//void safe_free(void **ptr);
 
 // Barvy pro výstup v terminálu
 /**

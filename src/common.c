@@ -6,7 +6,8 @@
  * které jsou využívány napříč projektem MicroMind.
  */
 
-#include "common.h"
+#include "../include/common.h"
+#include "../include/test_framework.h"
 #include <unistd.h> // pro isatty
 #include <stdio.h>
 #include <stdlib.h>
@@ -74,73 +75,16 @@ const char* get_log_color(LogLevel level) {
     }
 }
 
-/**
- * @brief Bezpečné uvolnění alokované paměti.
- *
- * Implementace funkce pro bezpečné uvolnění paměti a nastavení ukazatele na NULL.
- *
- * @param ptr Ukazatel na ukazatel na paměť, která má být uvolněna.
- */
-void safe_free(void **ptr) {
-    if (ptr == NULL || *ptr == NULL) {
-        return;
-    }
-
-    pthread_mutex_lock(&free_mutex);
-    free(*ptr);
-    *ptr = NULL;
-    pthread_mutex_unlock(&free_mutex);
-}
 
 /**
- * @brief Vypíše logovací zprávu.
+ * @brief Logovací funkce pro zaznamenání chybové zprávy.
  *
- * Implementace funkce pro logování zpráv do standardního chybového výstupu.
+ * Tato funkce vypíše chybovou zprávu na standardní chybový výstup spolu s názvem funkce,
+ * ve které k chybě došlo.
  *
- * @param level Úroveň logování zprávy.
- * @param func Název funkce, která logovací zprávu generuje.
- * @param format Formátovací řetězec ve stylu printf.
+ * @param func Název funkce, ve které došlo k chybě.
+ * @param message Text chybové zprávy, která má být zaznamenána.
  */
-void log_message(LogLevel level, const char* func, const char* format, ...) {
-    pthread_mutex_lock(&log_level_mutex);
-    LogLevel current_level = current_log_level;
-    pthread_mutex_unlock(&log_level_mutex);
-
-    if (level < current_level) {
-        return;
-    }
-
-    // Získání času pomocí thread-safe funkce
-    time_t now = time(NULL);
-    struct tm tstruct;
-    char time_buffer[50];
-    if (localtime_r(&now, &tstruct) == NULL) {
-        strcpy(time_buffer, "[TIME ERROR]");
-    } else {
-        if (strftime(time_buffer, sizeof(time_buffer), "%Y-%m-%d %X", &tstruct) == 0) {
-            strcpy(time_buffer, "[TIME FORMAT ERROR]");
-        }
-    }
-
-    // Kontrola, zda je stderr terminál
-    bool use_color = isatty(fileno(stderr));
-
-    // Výpis logovací zprávy
-    va_list args;
-    va_start(args, format);
-    if (use_color) {
-        fprintf(stderr, "%s [%s] %s", time_buffer, func, get_log_color(level));
-    } else {
-        fprintf(stderr, "%s [%s] ", time_buffer, func);
-    }
-
-    // Předpokládáme, že formátovací řetězec je důvěryhodný
-    vfprintf(stderr, format, args);
-    
-    if (use_color) {
-        fprintf(stderr, "%s\n", RESET_COLOR);
-    } else {
-        fprintf(stderr, "\n");
-    }
-    va_end(args);
+void log_error(const char* func, const char* message) {
+    fprintf(stderr, "[ERROR] %s: %s\n", func, message);
 }

@@ -1,4 +1,4 @@
-#include "test_framework.h"
+#include "../include/test_framework.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -28,4 +28,14 @@ void run_test(const char* test_name, bool condition) {
         printf(TEST_FAILED_COLOR "[FAILED] %s\n" TEST_RESET_COLOR, test_name);
     }
     printf("----------------------------------------\n");
+}
+
+/**
+ * @brief Vytiskne souhrn výsledků testů.
+ *
+ * Tato funkce vypíše celkový počet testů a počet úspěšných testů.
+ */
+void print_test_summary() {
+    printf("\nTesty dokončeny\n");
+    printf("\nCelkové shrnutí: %d/%d testů úspěšných.\n", passed_tests, total_tests);
 }
