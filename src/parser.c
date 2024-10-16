@@ -1,160 +1,115 @@
 /* SPDX-License-Identifier: GPL-2.0-only */
-/*
- * test_parser.c - Testovací soubor pro testování funkcí z parser.c pomocí testovacího rámce
- *
- * Tento soubor obsahuje testy pro funkce z parser.c, jako jsou logování a bezpečné uvolňování paměti.
- */
-
-#include "../include/test_framework.h"
 #include "../include/parser.h"
-#include "tokenizer.h"
+#include "../include/test_framework.h" 
+#include "../include/common.h"
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 #include <errno.h>
-#include <assert.h>
+#include <ctype.h>
 
-// Definice barev pro výstup v terminálu
-#define RESET_COLOR   "\033[0m"
-#define RED_COLOR     "\033[31m"
-#define GREEN_COLOR   "\033[32m"
-#define BLUE_COLOR    "\033[34m"
 
-#define SAFE_FREE(ptr) do { if ((ptr) != NULL) { free(ptr); (ptr) = NULL; } } while (0)
+#define INITIAL_ALLOCATION_SIZE 10
 
-void test_basic_parsing() {
-    printf("Running basic parsing test:\n");
+/* Funkce pro logování chyb */
+void log_error(const char* func, const char* msg) {
+    fprintf(stderr, "[ERROR] %s: %s (errno: %d - %s)\n", func, msg, errno, strerror(errno));
+}
 
-    char* tokens[] = {"token1", "token2", "token3"};
-    int token_count = 3;
-    int result_count = 0;
-    ParseResult* results = parse_tokens(tokens, token_count, &result_count);
+/**
+ * @brief Určuje typ tokenu.
+ *
+ * @param token Řetězec představující token, jehož typ má být určen.
+ * @return Typ tokenu jako celé číslo (např. 0 pro čísla, 1 pro operátory, 2 pro identifikátory, atd.).
+ */
+int determine_token_type(const char* token) {
+    if (token == NULL) {
+        return -1; // Chyba: neplatný token
+    }
 
-    assert(results != NULL);
-    assert(result_count == token_count);
+    // Kontrola, zda je token číslo (celé nebo desetinné)
+    char* endptr;
+    errno = 0;
+    strtod(token, &endptr);
+    if (errno == 0 && endptr != token && *endptr == '\0') {
+        return 0; // Typ: číslo
+    }
+
+    // Kontrola operátorů
+    const char* operators[] = {"+", "-", "*", "/", "=", "==", "!=", "<", ">", "<=", ">="};
+    int num_operators = sizeof(operators) / sizeof(operators[0]);
+    for (int i = 0; i < num_operators; ++i) {
+        if (strcmp(token, operators[i]) == 0) {
+            return 1; // Typ: operátor
+        }
+    }
+
+    // Jinak předpokládáme, že jde o identifikátor
+    return 2; // Typ: identifikátor
+}
+
+/* Statická funkce pro uvolnění částečně alokovaných pamětí */
+static void free_partial_results(ParseResult* results, int count) {
+    for (int i = 0; i < count; i++) {
+        SAFE_FREE(results[i].value);
+    }
+    SAFE_FREE(results);
+}
+
+/**
+ * @brief Analyzuje vstupní tokeny a generuje strukturu ParseResult.
+ *
+ * @param tokens Pole ukazatelů na tokeny, které mají být analyzovány.
+ * @param token_count Počet tokenů v poli.
+ * @param result_count Ukazatel na int, kam bude uložen počet výsledků analýzy.
+ * @return Pole struktur ParseResult nebo NULL v případě chyby.
+ */
+ParseResult* parse_tokens(char** tokens, int token_count, int* result_count) {
+    if (tokens == NULL || result_count == NULL) {
+        log_error("parse_tokens", "Invalid input: tokens or result_count is NULL");
+        return NULL;
+    }
+
+    if (token_count <= 0) {
+        log_error("parse_tokens", "Invalid input: token_count is non-positive");
+        return NULL;
+    }
+
+    int allocated_size = token_count;
+    ParseResult* results = (ParseResult*)malloc(allocated_size * sizeof(ParseResult));
+    if (results == NULL) {
+        log_error("parse_tokens", "Memory allocation failed for results array");
+        return NULL;
+    }
+
+    int count = 0;
+    for (int i = 0; i < token_count; i++) {
+        results[count].value = strdup(tokens[i]);
+        if (results[count].value == NULL) {
+            log_error("parse_tokens", "Memory allocation failed for result value");
+            free_partial_results(results, count);
+            return NULL;
+        }
+        results[count].type = determine_token_type(tokens[i]);
+        count++;
+    }
+
+    *result_count = count;
+    return results;
+}
+
+/**
+ * @brief Uvolní paměť použitou pro výsledky analýzy.
+ *
+ * @param results Pole struktur ParseResult, které mají být uvolněny.
+ * @param result_count Počet výsledků v poli.
+ */
+void free_parse_results(ParseResult* results, int result_count) {
+    if (results == NULL) {
+        return;
+    }
     for (int i = 0; i < result_count; i++) {
-        assert(strcmp(results[i].value, tokens[i]) == 0);
-        assert(results[i].type == 2); // Očekáváme typ identifikátor
+        SAFE_FREE(results[i].value);
     }
-    free_parse_results(results, result_count);
-    printf(GREEN_COLOR "[PASSED]" RESET_COLOR " Basic parsing test\n");
-}
-
-void test_null_tokens_input() {
-    printf("Running null tokens input test:\n");
-    int result_count = 0;
-    ParseResult* results = parse_tokens(NULL, 3, &result_count);
-    assert(results == NULL);
-    printf(GREEN_COLOR "[PASSED]" RESET_COLOR " Null tokens input test\n");
-}
-
-void test_null_result_count_input() {
-    printf("Running null result count input test:\n");
-    char* tokens[] = {"token1", "token2"};
-    ParseResult* results = parse_tokens(tokens, 2, NULL);
-    assert(results == NULL);
-    printf(GREEN_COLOR "[PASSED]" RESET_COLOR " Null result count input test\n");
-}
-
-void test_negative_token_count() {
-    printf("Running negative token count test:\n");
-    char* tokens[] = {"token1", "token2"};
-    int result_count = 0;
-    ParseResult* results = parse_tokens(tokens, -1, &result_count);
-    assert(results == NULL);
-    printf(GREEN_COLOR "[PASSED]" RESET_COLOR " Negative token count test\n");
-}
-
-void test_empty_token_list() {
-    printf("Running empty token list test:\n");
-    int result_count = 0;
-    ParseResult* results = parse_tokens(NULL, 0, &result_count);
-    assert(results == NULL);
-    printf(GREEN_COLOR "[PASSED]" RESET_COLOR " Empty token list test\n");
-}
-
-void test_long_token_list() {
-    printf("Running long token list test:\n");
-    char* long_tokens[1000];
-    for (int i = 0; i < 1000; i++) {
-        long_tokens[i] = "token";
-    }
-    int result_count = 0;
-    ParseResult* results = parse_tokens(long_tokens, 1000, &result_count);
-    assert(results != NULL);
-    assert(result_count == 1000);
-    for (int i = 0; i < result_count; i++) {
-        assert(strcmp(results[i].value, "token") == 0);
-        assert(results[i].type == 2); // Očekáváme typ identifikátor
-    }
-    free_parse_results(results, result_count);
-    printf(GREEN_COLOR "[PASSED]" RESET_COLOR " Long token list test\n");
-}
-
-void test_special_characters_in_tokens() {
-    printf("Running special characters in tokens test:\n");
-    char* special_tokens[] = {"!@#$", "%^&*", "()_+"};
-    int result_count = 0;
-    ParseResult* results = parse_tokens(special_tokens, 3, &result_count);
-    assert(results != NULL);
-    assert(result_count == 3);
-    for (int i = 0; i < result_count; i++) {
-        assert(strcmp(results[i].value, special_tokens[i]) == 0);
-        assert(results[i].type == 2); // Očekáváme typ identifikátor
-    }
-    free_parse_results(results, result_count);
-    printf(GREEN_COLOR "[PASSED]" RESET_COLOR " Special characters in tokens test\n");
-}
-
-void test_mixed_tokens() {
-    printf("Running mixed tokens test:\n");
-    char* tokens[] = {"123", "+", "variable", "-", "3.14", "*", "=="};
-    int token_count = 7;
-    int result_count = 0;
-    ParseResult* results = parse_tokens(tokens, token_count, &result_count);
-    assert(results != NULL);
-    assert(result_count == token_count);
-    int expected_types[] = {0, 1, 2, 1, 0, 1, 1}; // Očekávané typy
-    for (int i = 0; i < result_count; i++) {
-        assert(strcmp(results[i].value, tokens[i]) == 0);
-        assert(results[i].type == expected_types[i]);
-    }
-    free_parse_results(results, result_count);
-    printf(GREEN_COLOR "[PASSED]" RESET_COLOR " Mixed tokens test\n");
-}
-
-void test_mixed_delimiters() {
-    printf("Running mixed delimiters test:\n");
-    const char* text = "token1,token2 token3;token4";
-    int token_count = 0;
-    // Použijeme tokenizer s oddělovači ",; "
-    char** tokens = tokenize(text, &token_count, ",; ");
-    assert(tokens != NULL);
-    assert(token_count == 4);
-    int result_count = 0;
-    ParseResult* results = parse_tokens(tokens, token_count, &result_count);
-    assert(results != NULL);
-    assert(result_count == token_count);
-    for (int i = 0; i < result_count; i++) {
-        // Ověříme hodnoty tokenů
-        assert(strcmp(results[i].value, tokens[i]) == 0);
-        // Očekáváme typ identifikátor pro všechny tokeny
-        assert(results[i].type == 2);
-    }
-    free_parse_results(results, result_count);
-    free_tokens(tokens, token_count);
-    printf(GREEN_COLOR "[PASSED]" RESET_COLOR " Mixed delimiters test\n");
-}
-
-int main() {
-    test_basic_parsing();
-    test_null_tokens_input();
-    test_null_result_count_input();
-    test_negative_token_count();
-    test_empty_token_list();
-    test_long_token_list();
-    test_special_characters_in_tokens();
-    test_mixed_tokens();
-    test_mixed_delimiters();
-    printf(BLUE_COLOR "All tests passed successfully.\n" RESET_COLOR);
-    return 0;
+    SAFE_FREE(results);
 }

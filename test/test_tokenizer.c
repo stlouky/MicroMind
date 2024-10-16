@@ -155,6 +155,41 @@ void test_multilingual_text() {
     free_tokens(tokens, token_count);
 }
 
+// Test pouze s oddělovači
+void test_only_delimiters() {
+    const char* text = "    ,,,   ";
+    int token_count = 0;
+    char** tokens = tokenize(text, &token_count, ", ");
+
+    RUN_TEST("Only delimiters - token count should be 0", token_count == 0);
+    free_tokens(tokens, token_count);
+}
+
+// Test pro velmi dlouhý vstup
+void test_very_large_input() {
+    const char* text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. ";
+    int iterations = 10000;
+    char* large_text = malloc(strlen(text) * iterations + 1);
+    large_text[0] = '\0';
+    for (int i = 0; i < iterations; i++) {
+        strcat(large_text, text);
+    }
+
+    int token_count = 0;
+    char** tokens = tokenize(large_text, &token_count, " ");
+    RUN_TEST("Very large input - tokens should not be NULL", tokens != NULL);
+    free_tokens(tokens, token_count);
+    free(large_text);
+}
+
+// Test pro neplatné oddělovače
+void test_invalid_delimiters() {
+    const char* text = "Test text with invalid delimiter";
+    char** tokens = tokenize(text, NULL, NULL);
+    RUN_TEST("Invalid delimiters - tokens should not be NULL", tokens == NULL);
+    free_tokens(tokens, 1);
+}
+
 int main() {
     test_basic_tokenization();
     test_custom_delimiters();
@@ -169,6 +204,9 @@ int main() {
     test_long_words();
     test_mixed_delimiters();
     test_multilingual_text();
+    test_only_delimiters();
+    test_very_large_input();
+    test_invalid_delimiters();
 
     print_test_summary();
     return 0;

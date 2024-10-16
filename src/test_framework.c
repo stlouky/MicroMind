@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <string.h>
 
 // Počítadla testů
 int total_tests = 0;  /**< Celkový počet spuštěných testů */
