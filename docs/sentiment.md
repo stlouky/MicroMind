@@ -132,8 +132,7 @@ free_sentiment_table();
 void* analyze_text_thread(void* arg) {
     const char* text = (const char*)arg;
     int score = analyze_sentiment(text, &config);
-    printf("Sentimentální skóre vlákna: %d
-", score);
+    printf("Sentimentální skóre vlákna: %d", score);
     return NULL;
 }
 
@@ -141,8 +140,7 @@ int main() {
     // Načtení sentimentu
     if (load_sentiment_words("positive_words.txt", 1) != 0 ||
         load_sentiment_words("negative_words.txt", -1) != 0) {
-        fprintf(stderr, "Chyba: Nepodařilo se načíst sentimentální slova
-");
+        fprintf(stderr, "Chyba: Nepodařilo se načíst sentimentální slova");
         return 1;
     }
 
@@ -187,16 +185,14 @@ int main() {
 
     // Načtení sentimentálních slov
     if (load_sentiment_words(filename, score) != 0) {
-        fprintf(stderr, "Chyba: Nepodařilo se načíst sentimentální slova
-");
+        fprintf(stderr, "Chyba: Nepodařilo se načíst sentimentální slova");
         return 1;
     }
 
     // Analýza textu
     const char* text = "Tento produkt je skvělý, ale má pár drobných chyb.";
     int sentiment_score = analyze_sentiment(text, &config);
-    printf("Sentimentální skóre: %d
-", sentiment_score);
+    printf("Sentimentální skóre: %d", sentiment_score);
 
     // Uvolnění paměti
     free_sentiment_table();
@@ -215,15 +211,13 @@ void process_user_input(const char* user_input) {
     // Načtení sentimentu
     if (load_sentiment_words("positive_words.txt", 1) != 0 ||
         load_sentiment_words("negative_words.txt", -1) != 0) {
-        fprintf(stderr, "Chyba: Nepodařilo se načíst sentimentální slova
-");
+        fprintf(stderr, "Chyba: Nepodařilo se načíst sentimentální slova");
         return;
     }
 
     // Analýza sentimentu uživatelského vstupu
     int sentiment_score = analyze_sentiment(user_input, &config);
-    printf("Sentimentální skóre uživatelského vstupu: %d
-", sentiment_score);
+    printf("Sentimentální skóre uživatelského vstupu: %d", sentiment_score);
 
     // Integrace s MicroMind pro další zpracování
     if (sentiment_score > 0) {
