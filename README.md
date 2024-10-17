@@ -59,3 +59,28 @@ MicroMind/
 ├── .gitignore
 ├── README.md
 └── TODO.md
+
+Popis Klíčových Adresářů a Souborů:
+
+src/: Obsahuje zdrojové kódy hlavních komponent projektu, včetně orchestrátoru, loggeru, a jednotlivých modulů.
+
+preprocess/, tokenizer/, classifier/, ner/: Každý z těchto podsložek obsahuje zdrojové kódy a hlavičkové soubory pro konkrétní modul.
+thread_pool/: Implementace thread poolu pro paralelní zpracování.
+include/: Globální hlavičkové soubory, které jsou sdíleny mezi různými částmi projektu.
+
+module_interface.h: Definuje standardizovaná rozhraní, která musí všechny moduly implementovat.
+modules/: Obsahuje dynamicky načítatelné moduly implementované jako sdílené knihovny (.so soubory).
+
+ner/: Nově přidaný modul pro rozpoznávání entit (NER).
+tests/: Obsahuje jednotkové a integrační testy pro různé moduly a hlavní orchestrátor.
+
+docs/: Dokumentace projektu, včetně přehledu, architektury a návodu k použití.
+
+config/: Konfigurační soubory pro orchestrátora a moduly.
+
+build/: Místo pro ukládání kompilovaných objektů a binárních souborů.
+
+scripts/: Skripty pro automatizaci build procesu, testování a nasazení.
+
+logs/: Logovací soubory pro sledování událostí a chyb v systému.
+
