@@ -1,3 +1,4 @@
+``` plaintext
 MicroMind/
 ├── src/
 │   ├── main.c
@@ -59,3 +60,4 @@ MicroMind/
 ├── .gitignore
 ├── README.md
 └── TODO.md
+```
