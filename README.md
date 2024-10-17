@@ -58,7 +58,7 @@ Dokumentace
 Podrobná dokumentace je dostupná v docs. Najdete zde technické specifikace, návody krok za krokem a příklady použití.
 
 Navrhovaná Adresářová Struktura
-graphql
+```graphql
 Zkopírovat kód
 MicroMind/
 ├── core/                     # Základní komponenty frameworku
@@ -86,6 +86,7 @@ MicroMind/
 │   ├── performance_tests/    # Testy zaměřené na výkon frameworku
 │   └── utils/                # Pomocné nástroje pro testování
 └── README.md                 # Hlavní dokumentace a úvod do projektu
+```
 Licence
 MicroMind je distribuován pod licencí MIT, což umožňuje široké využití a přispívání ze strany komunity. Tato licence poskytuje flexibilitu pro komerční i nekomerční použití.
 
