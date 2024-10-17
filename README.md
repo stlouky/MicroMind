@@ -41,12 +41,10 @@ MicroMind je inovativní a flexibilní modulární AI framework navržený pro e
    ```
 Přejděte do adresáře projektu:
 ```bash
-Zkopírovat kód
 cd MicroMind
 ```
 Nainstalujte závislosti:
 ```bash
-Zkopírovat kód
 # Příklad pro Python
 pip install -r requirements.txt
 ```
@@ -54,7 +52,6 @@ Použití
 Ukázkový příklad spuštění frameworku:
 
 ```bash
-Zkopírovat kód
 # Příkaz pro spuštění MicroMind
 ./start.sh
 ```
@@ -63,7 +60,6 @@ Podrobná dokumentace je dostupná v docs. Najdete zde technické specifikace, n
 
 Navrhovaná Adresářová Struktura
 ```graphql
-Zkopírovat kód
 MicroMind/
 ├── core/                     # Základní komponenty frameworku
 │   ├── orchestrator.c        # Implementace orchestrátoru
@@ -95,7 +91,6 @@ Licence
 MicroMind je distribuován pod licencí MIT, což umožňuje široké využití a přispívání ze strany komunity. Tato licence poskytuje flexibilitu pro komerční i nekomerční použití.
 
 ```markdown
-Zkopírovat kód
 
 ---
 
