@@ -146,9 +146,9 @@ MicroMind je inovativní a flexibilní modulární AI framework navržený pro e
 - **Vizualizace Dat:** Nástroje pro vizualizaci dat a výsledků analýz pro lepší interpretaci. Integrace s nástroji jako Grafana nebo Kibana pro pokročilou vizualizaci a analýzu dat.
 
 ## **Navrhovaná Adresářová Struktura**
-
+``` ymal
 MicroMind/ ├── core/ # Základní komponenty frameworku │ ├── orchestrator.c # Implementace orchestrátoru │ ├── data_structures.c # Základní datové struktury │ └── utils.c # Pomocné funkce ├── modules/ # Jednotlivé moduly pro různé funkce │ ├── language_detection/ # Rozpoznání jazyka │ ├── sentiment_analysis/ # Sentimentální analýza │ ├── topic_detection/ # Detekce tématu │ └── question_generation/ # Generování otázek ├── api/ # REST API pro externí komunikaci │ ├── api_server.c # Implementace API serveru │ └── routes/ # Definice API endpointů ├── plugins/ # Pluginy pro rozšíření frameworku │ ├── sample_plugin/ # Ukázkový plugin │ └── README.md # Dokumentace k pluginu ├── docs/ # Dokumentace projektu │ ├── modules/ # Dokumentace modulů │ ├── api_docs/ # Dokumentace k API │ └── tutorials/ # Tutoriály a příklady použití ├── tests/ # Testovací framework a skripty pro testování │ ├── unit_tests/ # Jednotkové testy pro jednotlivé moduly │ ├── integration_tests/ # Integrační testy pro ověření spolupráce modulů │ ├── performance_tests/ # Testy zaměřené na výkon frameworku │ └── utils/ # Pomocné nástroje pro testování └── README.md # Hlavní dokumentace a úvod do projektu
-
+```
 yaml
 Zkopírovat kód
 
