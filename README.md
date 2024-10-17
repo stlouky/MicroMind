@@ -1,3 +1,4 @@
+``` plaintext
 MicroMind/
 ├── src/
 │   ├── main.c
