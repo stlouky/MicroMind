@@ -38,22 +38,26 @@ MicroMind je inovativní a flexibilní modulární AI framework navržený pro e
 1. **Klone repo:**
    ```bash
    git clone https://github.com/your-username/MicroMind.git
+   ```
 Přejděte do adresáře projektu:
-bash
+```bash
 Zkopírovat kód
 cd MicroMind
+```
 Nainstalujte závislosti:
-bash
+```bash
 Zkopírovat kód
 # Příklad pro Python
 pip install -r requirements.txt
+```
 Použití
 Ukázkový příklad spuštění frameworku:
 
-bash
+```bash
 Zkopírovat kód
 # Příkaz pro spuštění MicroMind
 ./start.sh
+```
 Dokumentace
 Podrobná dokumentace je dostupná v docs. Najdete zde technické specifikace, návody krok za krokem a příklady použití.
 
@@ -90,7 +94,7 @@ MicroMind/
 Licence
 MicroMind je distribuován pod licencí MIT, což umožňuje široké využití a přispívání ze strany komunity. Tato licence poskytuje flexibilitu pro komerční i nekomerční použití.
 
-markdown
+```markdown
 Zkopírovat kód
 
 ---
@@ -102,6 +106,8 @@ Zkopírovat kód
 3. **Usage:** Přidejte více konkrétních příkladů, jak používat MicroMind, včetně kódu nebo konfigurací.
 4. **Links:** Aktualizujte všechny odkazy (`your-username`) na skutečné URL a kontaktní informace.
 5. **Licenci:** Ujistěte se, že soubor `LICENSE` obsahuje text MIT licence nebo jinou, kterou jste zvolili.
+
+```
 
 Tento README.md poskytuje přehledný a technicky zaměřený úvod do projektu MicroMind, jeho silných stránek, způsobů instalace a použití, navrhovanou adresářovou strukturu a informace o licencování. Dokument je strukturován tak, aby byl snadno čitelný a poskytoval všechny potřebné technické informace pro nové uživatele a vývojáře.
 
