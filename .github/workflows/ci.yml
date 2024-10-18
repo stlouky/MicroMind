@@ -8,7 +8,7 @@ on:
 
 jobs:
   build-and-test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
     - name: Checkout Kódu
@@ -32,6 +32,18 @@ jobs:
       run: |
         mkdir -p logs
         mkdir -p docs/html
+
+    - name: Zobrazení Obsahu Kořenového Adresáře
+      run: |
+        echo "Obsah kořenového adresáře:"
+        ls -al
+
+    - name: Zobrazení Obsahu Podadresáře (pokud existuje)
+      run: |
+        if [ -d "MindFrame" ]; then
+          echo "Obsah adresáře MindFrame:"
+          ls -al MindFrame
+        fi
 
     - name: Sestavení Frameworku (Debug Režim)
       run: |
