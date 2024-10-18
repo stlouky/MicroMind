@@ -35,33 +35,38 @@ jobs:
         echo "Obsah kořenového adresáře:"
         ls -al
 
+    - name: Zobrazení Obsahu framework/
+      run: |
+        echo "Obsah framework/:"
+        ls -al framework/
+
     - name: Sestavení Frameworku (Debug Režim)
       run: |
-        make BUILD=debug
+        make -C framework BUILD=debug
 
     - name: Sestavení Frameworku (Release Režim)
       run: |
-        make BUILD=release
+        make -C framework BUILD=release
 
-    - name: Sestavení Sdílené Knihovny
+    - name: Sestavení Sdílené Knihovny (Verbose)
       run: |
-        make shared
+        make -C framework shared
 
     - name: Instalace Knihovny a Hlaviček
       run: |
-        make install DESTDIR=${{ github.workspace }}/install
+        make -C framework install DESTDIR=${{ github.workspace }}/install
 
     - name: Spuštění Testů
       run: |
-        make test
+        make -C framework test
 
     - name: Kontrola Paměťových Úniků pomocí Valgrind
       run: |
-        make memcheck
+        make -C framework memcheck
 
-    - name: Generování Dokumentace pomocí Doxygenu
+    - name: Generování Dokumentace pomocí Doxygen
       run: |
-        make docs
+        make -C framework docs
 
     - name: Publikace Dokumentace jako GitHub Pages (Volitelně)
       if: success()
@@ -72,3 +77,14 @@ jobs:
         publish_branch: gh-pages
         user_name: 'github-actions'
         user_email: 'github-actions@github.com'
+
+    - name: Cache Make Dependencies
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.cache
+          framework/obj
+          framework/lib
+        key: ${{ runner.os }}-make-${{ hashFiles('**/Makefile') }}
+        restore-keys: |
+          ${{ runner.os }}-make-
