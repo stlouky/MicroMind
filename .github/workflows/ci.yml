@@ -1,5 +1,6 @@
 name: CI
 
+# Spouštěcí podmínky pro workflow
 on:
   push:
     branches: [ main ]
@@ -10,24 +11,69 @@ jobs:
   build-and-test:
     runs-on: ubuntu-latest
 
+    # Definice kroků workflow
     steps:
     - name: Checkout Kódu
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
+
+    - name: Nastavení GCC
+      uses: actions/setup-gcc@v1
+      with:
+        gcc-version: '10' # Nastavte verzi GCC podle potřeb projektu
 
     - name: Instalace Závislostí
-      run: sudo apt-get update && sudo apt-get install -y gcc make valgrind
-
-    - name: Sestavení Frameworku
       run: |
-        cd framework
-        make
-        cd ..
+        sudo apt-get update
+        sudo apt-get install -y make valgrind doxygen graphviz
+
+    - name: Vytvoření Adresářů pro Logy a Dokumentaci
+      run: |
+        mkdir -p logs
+        mkdir -p docs/html
+
+    - name: Sestavení Frameworku (Debug Režim)
+      run: |
+        make BUILD=debug
+
+    - name: Sestavení Frameworku (Release Režim)
+      run: |
+        make BUILD=release
+
+    - name: Sestavení Sdílené Knihovny
+      run: |
+        make shared
+
+    - name: Instalace Knihovny a Hlaviček
+      run: |
+        sudo make install DESTDIR=${{ github.workspace }}/install
 
     - name: Sestavení Projektu
-      run: make
+      run: |
+        make
 
     - name: Spuštění Testů
-      run: make test
+      run: |
+        make test
 
-    - name: Kontrola Paměťových Úniků
-      run: valgrind --leak-check=full ./build/main
+    - name: Kontrola Paměťových Úniků pomocí Valgrind
+      run: |
+        valgrind --leak-check=full --error-exitcode=1 ./build/main
+
+    - name: Generování Dokumentace pomocí Doxygenu
+      run: |
+        make docs
+
+    - name: Publikace Dokumentace jako GitHub Pages (Volitelně)
+      if: success()
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./docs/html
+        publish_branch: gh-pages
+        user_name: 'github-actions'
+        user_email: 'github-actions@github.com'
+
+    # Volitelné kroky pro nahrání artefaktů nebo další analýzy
+
+  # Další joby mohou být přidány zde podle potřeb
+
