@@ -48,7 +48,7 @@ jobs:
       run: |
         make -C framework BUILD=release
 
-    - name: Sestavení Sdílené Knihovny (Verbose)
+    - name: Sestavení Sdílené Knihovny
       run: |
         make -C framework shared
 
