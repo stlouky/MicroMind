@@ -1,4 +1,4 @@
-#include "test_framework.h"
+#include "../include/test_framework.h"
 
 /** @brief Globální proměnná pro sledování počtu spuštěných testů. */
 int tests_run = 0;

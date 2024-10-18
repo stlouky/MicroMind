@@ -31,6 +31,10 @@ SRCS := $(wildcard $(SRC_DIR)/*.c)
 OBJS := $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(SRCS))
 DEPS := $(OBJS:.o=.d)
 
+# Diagnostické výstupy
+$(info SRCS: $(SRCS))
+$(info OBJS: $(OBJS))
+
 # Příznaky kompilátoru
 CFLAGS_COMMON := -I$(INC_DIR) -Wall -Wextra -std=c11 -MMD -MP
 
@@ -97,3 +101,8 @@ docs:
 
 # Automatické zahrnutí závislostí
 -include $(DEPS)
+
+# Pravidlo pro kompilaci .c na .o
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
+	@$(MKDIR) $(OBJ_DIR)
+	$(CC) $(CFLAGS) -c $< -o $@
