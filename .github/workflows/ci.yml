@@ -38,13 +38,6 @@ jobs:
         echo "Obsah kořenového adresáře:"
         ls -al
 
-    - name: Zobrazení Obsahu Podadresáře (pokud existuje)
-      run: |
-        if [ -d "MindFrame" ]; then
-          echo "Obsah adresáře MindFrame:"
-          ls -al MindFrame
-        fi
-
     - name: Sestavení Frameworku (Debug Režim)
       run: |
         make BUILD=debug
@@ -63,7 +56,7 @@ jobs:
 
     - name: Sestavení Projektu
       run: |
-        make
+        make build
 
     - name: Spuštění Testů
       run: |
@@ -71,7 +64,7 @@ jobs:
 
     - name: Kontrola Paměťových Úniků pomocí Valgrind
       run: |
-        valgrind --leak-check=full --error-exitcode=1 ./build/main
+        make memcheck
 
     - name: Generování Dokumentace pomocí Doxygenu
       run: |
