@@ -12,6 +12,7 @@ MKDIR := mkdir -p
 
 # Cesty k adresářům
 INC_DIR := ../include
+SRC_DIR := src
 OBJ_DIR := obj
 BIN_DIR := bin
 BUILD_DIR := build
@@ -26,8 +27,8 @@ SHARED_LIB_NAME := libmicro_mind.so
 SHARED_LIB := $(BIN_DIR)/$(SHARED_LIB_NAME)
 
 # Soubory zdrojového kódu
-SRCS := $(wildcard *.c)
-OBJS := $(patsubst %.c,$(OBJ_DIR)/%.o,$(SRCS))
+SRCS := $(wildcard $(SRC_DIR)/*.c)
+OBJS := $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(SRCS))
 DEPS := $(OBJS:.o=.d)
 
 # Příznaky kompilátoru
