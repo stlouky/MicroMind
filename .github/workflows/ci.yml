@@ -13,20 +13,17 @@ jobs:
     steps:
     - name: Checkout Kódu
       uses: actions/checkout@v3
+      with:
+        fetch-depth: 1
 
-    - name: Nastavení GCC
+    - name: Nastavení GCC a Dalších Nástrojů
       run: |
         sudo apt-get update
-        sudo apt-get install -y gcc-10 g++-10
+        sudo apt-get install -y gcc-10 g++-10 make valgrind doxygen graphviz
         sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 100
         sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-10 100
         gcc --version
         g++ --version
-
-    - name: Instalace Závislostí
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y make valgrind doxygen graphviz
 
     - name: Vytvoření Adresářů pro Logy a Dokumentaci
       run: |
@@ -53,10 +50,6 @@ jobs:
     - name: Instalace Knihovny a Hlaviček
       run: |
         make install DESTDIR=${{ github.workspace }}/install
-
-    - name: Sestavení Projektu
-      run: |
-        make build
 
     - name: Spuštění Testů
       run: |
