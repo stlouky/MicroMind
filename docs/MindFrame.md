@@ -7,6 +7,8 @@
 3. [Instalace](#instalace)
 4. [Začínáme](#začínáme)
 5. [API Reference](#api-reference)
+    - [Makra](#makra)
+    - [Funkce](#funkce)
 6. [Příklady Použití](#příklady-použití)
     - [Logování](#logování)
     - [Správa Paměti](#správa-paměti)
@@ -79,7 +81,8 @@ int main() {
     framework_logger_close();
     return EXIT_SUCCESS;
 }
-Výstup:
+
+Výstup v logovacím souboru (logs/mindframe.log):
 
 css
 Zkopírovat kód
@@ -92,36 +95,52 @@ Bezpečné uvolnění paměti a nastavení ukazatele na NULL.
 c
 Zkopírovat kód
 SAFE_FREE(buffer);
+Popis: Toto makro zajišťuje, že uvolňovaná paměť je správně uvolněna a ukazatel je nastaven na NULL, což zabraňuje přístupům k již uvolněné paměti.
+
 SAFE_ALLOC(ptr, size)
 Bezpečná alokace paměti s kontrolou úspěšnosti. Pokud alokace selže, dojde k logování chyby a ukončení programu.
 
 c
 Zkopírovat kód
 SAFE_ALLOC(buffer, sizeof(char) * 100);
+Popis: Makro alokuje paměť a pokud alokace selže, loguje chybu a bezpečně ukončí program.
+
 LOG_MESSAGE(level, format, ...)
 Jednotné logování zpráv s různými úrovněmi.
 
 c
 Zkopírovat kód
-LOG_MESSAGE(LOG_INFO, "Informational message: %s", info);
+LOG_MESSAGE(LOG_INFO, "Informační zpráva: %s", info);
+Popis: Makro pro logování zpráv na různých úrovních (DEBUG, INFO, WARN, ERROR) spolu s informacemi o souboru a řádku.
+
 RUN_TEST(description, condition)
 Makro pro psaní jednotkových testů, které zjednodušuje sledování a reportování výsledků testů.
 
 c
 Zkopírovat kód
-RUN_TEST("Testování funkce x", x == expected);
+RUN_TEST("Testování funkce add", add(2, 3) == 5);
+Popis: Spustí test s popisem a podmínkou. Výsledek testu je automaticky zaznamenán a zobrazen.
+
 Funkce
 void log_message(LogLevel level, const char *file, int line, const char *format, ...);
 Funkce pro logování zpráv.
 
+Popis: Loguje zprávy na základě zadané úrovně. Zprávy jsou zapisovány do logovacího souboru a zobrazovány v terminálu s barevným výstupem.
+
 void initialize_test_counters();
 Inicializuje počitadla testů.
+
+Popis: Inicializuje globální proměnné pro sledování počtu spuštěných a úspěšných testů.
 
 void print_test_summary();
 Vypíše shrnutí výsledků testů.
 
+Popis: Vypíše celkový počet spuštěných a úspěšných testů na konci testovacího běhu.
+
 int handle_error(const char *message, int exit_code);
 Zpracuje chybu s možností ukončení programu.
+
+Popis: Loguje chybovou zprávu, uzavírá logger a bezpečně ukončuje program s daným kódem.
 
 Příklady Použití
 Logování
@@ -180,7 +199,7 @@ int main() {
     framework_logger_close();
     return 0;
 }
-Výstup:
+Výstup v logovacím souboru (logs/mindframe.log):
 
 less
 Zkopírovat kód
@@ -210,7 +229,7 @@ int main() {
     framework_logger_close();
     return (tests_passed == tests_run) ? 0 : 1;
 }
-Výstup:
+Výstup v terminálu:
 
 scss
 Zkopírovat kód
@@ -240,174 +259,10 @@ int main() {
     framework_logger_close();
     return 0;
 }
-Výstup:
+Výstup v logovacím souboru (logs/mindframe.log):
 
 less
 Zkopírovat kód
 [2024-04-27 10:15:00] [ERROR] (error_handling_example.c:7) Nepodařilo se otevřít soubor.
 Program se ukončí s chybovým kódem 1.
-
-CI/CD Integrace
-Co je CI/CD?
-CI/CD (Continuous Integration/Continuous Deployment) je soubor praktik a nástrojů, které automatizují procesy vývoje softwaru, zajišťují rychlejší a spolehlivější dodávku kódu do produkčního prostředí.
-
-Continuous Integration (CI): Pravidelné integrace kódu do společného repozitáře s automatizovaným buildem a testováním.
-Continuous Deployment/Delivery (CD): Automatické nasazení kódu do produkčního prostředí po úspěšném průchodu CI procesem.
-Příklad GitHub Actions Workflow (.github/workflows/ci.yml)
-Níže je příklad konfigurace CI/CD pipeline pomocí GitHub Actions, která automaticky sestaví projekt, spustí testy a zkontroluje paměťové úniky pomocí Valgrind.
-
-yaml
-Zkopírovat kód
-name: CI
-
-on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
-
-jobs:
-  build-and-test:
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Checkout Kódu
-      uses: actions/checkout@v2
-
-    - name: Instalace Závislostí
-      run: sudo apt-get update && sudo apt-get install -y gcc make valgrind
-
-    - name: Sestavení Frameworku
-      run: |
-        cd framework
-        make
-        cd ..
-
-    - name: Sestavení Projektu
-      run: make
-
-    - name: Spuštění Testů
-      run: make test
-
-    - name: Kontrola Paměťových Úniků
-      run: valgrind --leak-check=full ./build/main
-Vysvětlení Kroků:
-Checkout Kódu: Stáhne aktuální kód z repozitáře.
-Instalace Závislostí: Nainstaluje potřebné nástroje jako GCC, Make a Valgrind.
-Sestavení Frameworku: Sestaví MindFrame framework.
-Sestavení Projektu: Sestaví hlavní program.
-Spuštění Testů: Spustí jednotkové testy.
-Kontrola Paměťových Úniků: Provádí kontrolu paměťových úniků pomocí Valgrind.
-Generování Dokumentace pomocí Doxygenu
-Co je Doxygen?
-Doxygen je nástroj pro generování dokumentace z komentářů v kódu. Umožňuje automaticky vytvářet přehlednou a strukturovanou dokumentaci ve formátech jako HTML, LaTeX, PDF atd.
-
-Příklad Použití Doxygenu s MindFrame
-1. Instalace Doxygenu
-Pro instalaci Doxygenu použijte následující příkaz (na Ubuntu):
-
-bash
-Zkopírovat kód
-sudo apt-get install doxygen doxygen-gui graphviz
-2. Vytvoření Konfiguračního Souboru
-V kořenovém adresáři projektu vytvořte konfigurační soubor Doxyfile pomocí příkazu:
-
-bash
-Zkopírovat kód
-doxygen -g Doxyfile
-3. Úprava Konfiguračního Souboru
-Otevřete Doxyfile a upravte následující položky:
-
-ini
-Zkopírovat kód
-# Projektové informace
-PROJECT_NAME           = "MindFrame"
-OUTPUT_DIRECTORY       = "docs"
-GENERATE_HTML          = YES
-GENERATE_LATEX         = NO
-INPUT                  = framework/include framework/src
-FILE_PATTERNS          = *.h *.c
-RECURSIVE              = YES
-4. Přidání Komentářů do Kódu
-Přidejte komentáře ve formátu Doxygen k vašim funkcím a makrám.
-
-c
-Zkopírovat kód
-/**
- * @brief Bezpečné uvolnění paměti a nastavení ukazatele na NULL.
- *
- * Tento makro zajišťuje, že uvolňovaná paměť je správně uvolněna a ukazatel je nastaven na NULL, což zabraňuje přístupům k již uvolněné paměti.
- *
- * @param ptr Ukazatel na paměť, která má být uvolněna.
- */
-#define SAFE_FREE(ptr) do { \
-    if (ptr) { \
-        free(ptr); \
-        ptr = NULL; \
-    } \
-} while(0)
-5. Generování Dokumentace
-Spusťte Doxygen s konfigurací Doxyfile:
-
-bash
-Zkopírovat kód
-doxygen Doxyfile
-Dokumentace bude vygenerována v adresáři docs/html. Otevřete soubor index.html v prohlížeči pro zobrazení dokumentace.
-
-Best Practices
-Konzistentní Styl Kódu:
-
-Dodržujte jednotný styl kódu napříč celým projektem. Používejte nástroje jako clang-format pro automatické formátování.
-Příklad .clang-format:
-
-yaml
-Zkopírovat kód
-BasedOnStyle: LLVM
-IndentWidth: 4
-ColumnLimit: 100
-Modularita:
-
-Udržujte kód modulární, aby byly jednotlivé komponenty snadno znovu použitelné a nezávislé na ostatních částech systému.
-Dokumentace Kódu:
-
-Dokumentujte klíčové funkce a struktury kódu pomocí komentářů, což usnadní pochopení a údržbu kódu.
-c
-Zkopírovat kód
-/**
- * @brief Inicializuje orchestrátor.
- *
- * @return Pointer na orchestrátor, nebo NULL v případě chyby.
- */
-Orchestrator* create_orchestrator();
-Automatizované Testování:
-
-Rozšiřujte sadu jednotkových testů a integrujte je do CI/CD pipeline pro rychlou detekci chyb.
-Správa Paměti:
-
-Používejte nástroje jako Valgrind pro detekci paměťových úniků a dalších chyb ve správě paměti.
-bash
-Zkopírovat kód
-valgrind --leak-check=full ./build/main
-Bezpečnostní Praktiky:
-
-Implementujte robustní validaci a sanitaci všech vstupů ve všech modulech, aby se zabránilo potenciálním bezpečnostním útokům.
-c
-Zkopírovat kód
-void safe_function(const char *input) {
-    ASSERT(input != NULL, "Input cannot be NULL");
-
-    // Další bezpečnostní kontroly...
-}
-Monitorování Výkonu:
-
-Pravidelně profilujte aplikaci pomocí nástrojů jako gprof nebo perf a optimalizujte identifikovaná úzká místa.
-bash
-Zkopírovat kód
-gcc -pg -o build/main src/main.c src/orchestrator.c -L./framework -lmindframe $(CFLAGS) $(LDFLAGS)
-./build/main
-gprof build/main gmon.out > analysis.txt
-Závěr
-Framework MindFrame poskytuje silný a flexibilní základ pro vývoj softwarových aplikací v jazyce C. Díky bezpečné správě paměti, pokročilému logování, jednotkovému testování a konzistentnímu zpracování chyb výrazně zvyšuje efektivitu a kvalitu vývoje. Dodržováním doporučených best practices zajistíte, že váš projekt bude robustní, rozšiřitelný a snadno udržitelný.
-
-Pokud budete potřebovat další pomoc nebo konzultaci ohledně konkrétních částí frameworku, neváhejte se na mě obrátit!
 
