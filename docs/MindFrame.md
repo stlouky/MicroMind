@@ -90,7 +90,8 @@ Výstup v logovacím souboru (logs/mindframe.log):
 
 ## API Reference
 ### Makra
-SAFE_FREE(ptr)
+
+**SAFE_FREE(ptr)**
 Bezpečné uvolnění paměti a nastavení ukazatele na NULL.
 
 ```c
@@ -98,7 +99,8 @@ SAFE_FREE(buffer);
 ```
 Popis: Toto makro zajišťuje, že uvolňovaná paměť je správně uvolněna a ukazatel je nastaven na NULL, což zabraňuje přístupům k již uvolněné paměti.
 
-SAFE_ALLOC(ptr, size)
+
+**SAFE_ALLOC(ptr, size)**
 Bezpečná alokace paměti s kontrolou úspěšnosti. Pokud alokace selže, dojde k logování chyby a ukončení programu.
 
 ```c
@@ -106,7 +108,8 @@ SAFE_ALLOC(buffer, sizeof(char) * 100);
 ```
 Popis: Makro alokuje paměť a pokud alokace selže, loguje chybu a bezpečně ukončí program.
 
-LOG_MESSAGE(level, format, ...)
+
+**LOG_MESSAGE(level, format, ...)**
 Jednotné logování zpráv s různými úrovněmi.
 
 ```c
@@ -114,7 +117,8 @@ LOG_MESSAGE(LOG_INFO, "Informační zpráva: %s", info);
 ```
 Popis: Makro pro logování zpráv na různých úrovních (DEBUG, INFO, WARN, ERROR) spolu s informacemi o souboru a řádku.
 
-RUN_TEST(description, condition)
+
+**RUN_TEST(description, condition)**
 Makro pro psaní jednotkových testů, které zjednodušuje sledování a reportování výsledků testů.
 
 ```c
@@ -122,23 +126,27 @@ RUN_TEST("Testování funkce add", add(2, 3) == 5);
 ```
 Popis: Spustí test s popisem a podmínkou. Výsledek testu je automaticky zaznamenán a zobrazen.
 
+
 ### Funkce
 void log_message(LogLevel level, const char *file, int line, const char *format, ...);
 Funkce pro logování zpráv.
 
 Popis: Loguje zprávy na základě zadané úrovně. Zprávy jsou zapisovány do logovacího souboru a zobrazovány v terminálu s barevným výstupem.
 
-void initialize_test_counters();
+
+**void initialize_test_counters();**
 Inicializuje počitadla testů.
 
 Popis: Inicializuje globální proměnné pro sledování počtu spuštěných a úspěšných testů.
 
-void print_test_summary();
+
+**void print_test_summary();**
 Vypíše shrnutí výsledků testů.
 
 Popis: Vypíše celkový počet spuštěných a úspěšných testů na konci testovacího běhu.
 
-int handle_error(const char *message, int exit_code);
+
+**int handle_error(const char *message, int exit_code);**
 Zpracuje chybu s možností ukončení programu.
 
 Popis: Loguje chybovou zprávu, uzavírá logger a bezpečně ukončuje program s daným kódem.
