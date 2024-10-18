@@ -84,44 +84,45 @@ int main() {
 
 Výstup v logovacím souboru (logs/mindframe.log):
 
-css
-Zkopírovat kód
+```css
 [2024-04-27 10:00:00] [INFO] (main.c:10) Aplikace byla spuštěna.
-API Reference
-Makra
+```
+
+## API Reference
+### Makra
 SAFE_FREE(ptr)
 Bezpečné uvolnění paměti a nastavení ukazatele na NULL.
 
-c
-Zkopírovat kód
+```c
 SAFE_FREE(buffer);
+```
 Popis: Toto makro zajišťuje, že uvolňovaná paměť je správně uvolněna a ukazatel je nastaven na NULL, což zabraňuje přístupům k již uvolněné paměti.
 
 SAFE_ALLOC(ptr, size)
 Bezpečná alokace paměti s kontrolou úspěšnosti. Pokud alokace selže, dojde k logování chyby a ukončení programu.
 
-c
-Zkopírovat kód
+```c
 SAFE_ALLOC(buffer, sizeof(char) * 100);
+```
 Popis: Makro alokuje paměť a pokud alokace selže, loguje chybu a bezpečně ukončí program.
 
 LOG_MESSAGE(level, format, ...)
 Jednotné logování zpráv s různými úrovněmi.
 
-c
-Zkopírovat kód
+```c
 LOG_MESSAGE(LOG_INFO, "Informační zpráva: %s", info);
+```
 Popis: Makro pro logování zpráv na různých úrovních (DEBUG, INFO, WARN, ERROR) spolu s informacemi o souboru a řádku.
 
 RUN_TEST(description, condition)
 Makro pro psaní jednotkových testů, které zjednodušuje sledování a reportování výsledků testů.
 
-c
-Zkopírovat kód
+```c
 RUN_TEST("Testování funkce add", add(2, 3) == 5);
+```
 Popis: Spustí test s popisem a podmínkou. Výsledek testu je automaticky zaznamenán a zobrazen.
 
-Funkce
+### Funkce
 void log_message(LogLevel level, const char *file, int line, const char *format, ...);
 Funkce pro logování zpráv.
 
@@ -142,12 +143,11 @@ Zpracuje chybu s možností ukončení programu.
 
 Popis: Loguje chybovou zprávu, uzavírá logger a bezpečně ukončuje program s daným kódem.
 
-Příklady Použití
-Logování
+## Příklady Použití
+**Logování**
 Ukázka logování různých úrovní zpráv.
 
-c
-Zkopírovat kód
+```c
 #include "mindframe.h"
 #include "logger.h"
 
@@ -162,27 +162,28 @@ int main() {
     framework_logger_close();
     return 0;
 }
+```
 Výstup v terminálu:
 
-less
+```less
 Zkopírovat kód
 [2024-04-27 10:05:00] [DEBUG] (example.c:6) Toto je debug zpráva.
 [2024-04-27 10:05:00] [INFO] (example.c:7) Toto je informační zpráva.
 [2024-04-27 10:05:00] [WARN] (example.c:8) Toto je varovná zpráva.
 [2024-04-27 10:05:00] [ERROR] (example.c:9) Toto je chybová zpráva.
+```
 Výstup v logovacím souboru (logs/mindframe.log):
 
-less
-Zkopírovat kód
+```less
 [2024-04-27 10:05:00] [DEBUG] (example.c:6) Toto je debug zpráva.
 [2024-04-27 10:05:00] [INFO] (example.c:7) Toto je informační zpráva.
 [2024-04-27 10:05:00] [WARN] (example.c:8) Toto je varovná zpráva.
 [2024-04-27 10:05:00] [ERROR] (example.c:9) Toto je chybová zpráva.
-Správa Paměti
+```
+### Správa Paměti
 Ukázka bezpečné alokace a uvolnění paměti pomocí makra SAFE_ALLOC a SAFE_FREE.
 
-c
-Zkopírovat kód
+```c
 #include "mindframe.h"
 
 int main() {
@@ -199,16 +200,17 @@ int main() {
     framework_logger_close();
     return 0;
 }
+```
 Výstup v logovacím souboru (logs/mindframe.log):
 
-less
+```less
 Zkopírovat kód
 [2024-04-27 10:10:00] [INFO] (memory_example.c:8) Buffer obsahuje: Toto je testovací řetězec.
-Jednotkové Testování
+```
+### Jednotkové Testování
 Ukázka psaní a spuštění jednotkového testu pomocí RUN_TEST.
 
-c
-Zkopírovat kód
+```c
 #include "mindframe.h"
 #include "test_framework.h"
 
@@ -229,20 +231,21 @@ int main() {
     framework_logger_close();
     return (tests_passed == tests_run) ? 0 : 1;
 }
+```
 Výstup v terminálu:
 
-scss
+```scss
 Zkopírovat kód
 [PASS] Test add(2, 3) == 5
 [PASS] Test add(-1, 1) == 0
 [PASS] Test add(0, 0) == 0
 
 Shrnutí testů: 3/3 testů prošlo.
-Error Handling
+```
+### Error Handling
 Ukázka konzistentního zpracování chyb pomocí handle_error.
 
-c
-Zkopírovat kód
+```c
 #include "mindframe.h"
 #include "logger.h"
 
@@ -259,10 +262,11 @@ int main() {
     framework_logger_close();
     return 0;
 }
+```
 Výstup v logovacím souboru (logs/mindframe.log):
 
-less
-Zkopírovat kód
+```less
 [2024-04-27 10:15:00] [ERROR] (error_handling_example.c:7) Nepodařilo se otevřít soubor.
+```
 Program se ukončí s chybovým kódem 1.
 
