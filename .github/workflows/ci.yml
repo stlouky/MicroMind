@@ -1,6 +1,5 @@
 name: CI
 
-# Spouštěcí podmínky pro workflow
 on:
   push:
     branches: [ main ]
@@ -11,15 +10,18 @@ jobs:
   build-and-test:
     runs-on: ubuntu-latest
 
-    # Definice kroků workflow
     steps:
     - name: Checkout Kódu
       uses: actions/checkout@v3
 
     - name: Nastavení GCC
-      uses: actions/setup-gcc@v1
-      with:
-        gcc-version: '10' # Nastavte verzi GCC podle potřeb projektu
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y gcc-10 g++-10
+        sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 100
+        sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-10 100
+        gcc --version
+        g++ --version
 
     - name: Instalace Závislostí
       run: |
@@ -45,7 +47,7 @@ jobs:
 
     - name: Instalace Knihovny a Hlaviček
       run: |
-        sudo make install DESTDIR=${{ github.workspace }}/install
+        make install DESTDIR=${{ github.workspace }}/install
 
     - name: Sestavení Projektu
       run: |
@@ -72,8 +74,3 @@ jobs:
         publish_branch: gh-pages
         user_name: 'github-actions'
         user_email: 'github-actions@github.com'
-
-    # Volitelné kroky pro nahrání artefaktů nebo další analýzy
-
-  # Další joby mohou být přidány zde podle potřeb
-
